@@ -12,9 +12,7 @@ The key feature of an RNN is its hidden state, which captures information from p
 
 The recurrence relation in a simple RNN can be expressed as:
 
-\[
- h_t = f(W_h h_{t-1} + W_x x_t + b)
-\]
+![Equation](https://latex.codecogs.com/png.latex?h_t%20=%20f(W_h%20h_{t-1}%20+%20W_x%20x_t%20+%20b))
 
 where:
 - \(h_t\) is the hidden state at time step \(t\)
