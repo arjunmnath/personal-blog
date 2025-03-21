@@ -29,13 +29,20 @@ jobs:
       - name: Install dependencies
         run: |
           bundle install || bundle update
-        working-directory: ./  # Specify the correct directory if your Gemfile is inside a subdirectory
 
       - name: Build the site
         run: JEKYLL_ENV=production bundle exec jekyll build
-        working-directory: ./  # Ensure the build command is executed in the correct directory
 
-      - name: Upload artifact (FIXED)
+      - name: Check if _site exists
+        run: |
+          if [ -d "_site" ]; then
+            echo "_site directory exists, proceeding to upload.";
+          else
+            echo "_site directory does not exist. Build failed!";
+            exit 1;
+          fi
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: github-pages
@@ -43,3 +50,5 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
+        with:
+          artifact_name: github-pages
