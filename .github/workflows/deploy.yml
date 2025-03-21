@@ -42,6 +42,9 @@ jobs:
             exit 1;
           fi
 
+      - name: List files in the build directory
+        run: ls -alh _site
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
