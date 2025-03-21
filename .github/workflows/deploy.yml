@@ -17,7 +17,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y chromium-browser
+          sudo apt install -y chromium-browser libatk-bridge2.0-0 libnspr4 libnss3 libxss1 libasound2
 
       - name: Install md-to-pdf
         run: npm install -g md-to-pdf
@@ -25,9 +25,7 @@ jobs:
       - name: Convert Markdown to PDF
         run: |
           PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser) \
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-          PUPPETEER_ARGS="--no-sandbox --disable-setuid-sandbox" \
-          md-to-pdf README.md --config-file .md-to-pdf.json
+          md-to-pdf README.md --config-file .md-to-pdf.json --launch-options.args="--no-sandbox --disable-setuid-sandbox"
 
       - name: Upload PDF Artifact
         uses: actions/upload-artifact@v4
