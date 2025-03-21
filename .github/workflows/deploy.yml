@@ -33,9 +33,10 @@ jobs:
 
       - name: Convert README.md to Styled HTML
         run: |
-          PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser) md-to-pdf README.md --no-sandbox --config-file .md-to-pdf.json
+          export PUPPETEER_ARGS="--no-sandbox"
+          md-to-pdf README.md --config-file .md-to-pdf.json
           mv README.pdf index.html  # Rename for GitHub Pages
-
+          
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
