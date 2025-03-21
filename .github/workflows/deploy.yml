@@ -1,34 +1,41 @@
-name: Convert Markdown to PDF
+name: Deploy Jekyll to GitHub Pages
 
 on:
   push:
-    paths:
-      - "README.md"
-  workflow_dispatch:
+    branches:
+      - main  # Change if using a different branch
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  convert:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y chromium-browser libatk-bridge2.0-0 libnspr4 libnss3 libxss1 libasound2t64 || true
-
-      - name: Install md-to-pdf
-        run: npm install -g md-to-pdf
-
-      - name: Convert Markdown to PDF
-        run: |
-          PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser) \
-          md-to-pdf README.md --config-file .md-to-pdf.json --launch-options.args="--no-sandbox --disable-setuid-sandbox"
-
-      - name: Upload PDF Artifact
-        uses: actions/upload-artifact@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          name: README-pdf
-          path: README.pdf
+          ruby-version: '3.1'  # Use the latest Ruby version supported by GitHub Pages
+
+      - name: Install Jekyll and Bundler
+        run: gem install jekyll bundler
+
+      - name: Install dependencies
+        run: bundle install || bundle update  # Ensures dependencies are installed
+
+      - name: Build the site
+        run: JEKYLL_ENV=production bundle exec jekyll build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: _site  # Jekyll output directory
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v2
