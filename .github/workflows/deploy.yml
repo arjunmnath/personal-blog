@@ -1,46 +1,36 @@
-name: Deploy GitHub Pages
+name: Convert Markdown to PDF
 
 on:
   push:
-    branches:
-      - main  
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+    paths:
+      - "README.md"
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  convert:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install Node.js and md-to-pdf
+      - name: Install Dependencies
         run: |
-          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          npm install -g md-to-pdf
+          sudo apt update
+          sudo apt install -y chromium-browser
 
-      - name: Ensure Config Exists
-        run: |
-          if [ ! -f .md-to-pdf.json ]; then
-            echo 'Creating default .md-to-pdf.json'
-            echo '{ "stylesheet": "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css", "pdf_options": { "format": "A4", "margin": "20mm", "displayHeaderFooter": false } }' > .md-to-pdf.json
-          fi
+      - name: Install md-to-pdf
+        run: npm install -g md-to-pdf
 
-      - name: Convert README.md to Styled HTML
+      - name: Convert Markdown to PDF
         run: |
-          export PUPPETEER_ARGS="--no-sandbox"
+          PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser) \
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+          PUPPETEER_ARGS="--no-sandbox --disable-setuid-sandbox" \
           md-to-pdf README.md --config-file .md-to-pdf.json
-          mv README.pdf index.html  # Rename for GitHub Pages
-          
-      - name: Upload Artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+      - name: Upload PDF Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: README-pdf
+          path: README.pdf
