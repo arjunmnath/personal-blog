@@ -18,14 +18,16 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install Pandoc
-        run: sudo apt-get update && sudo apt-get install -y pandoc
-
-      - name: Convert README.md to HTML
+      - name: Install Node.js and md-to-pdf
         run: |
-          echo "<html><body>" > index.html
-          pandoc -f markdown -t html README.md >> index.html
-          echo "</body></html>" >> index.html
+          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          npm install -g md-to-pdf
+
+      - name: Convert README.md to Styled HTML
+        run: |
+          md-to-pdf README.md --config-file .md-to-pdf.json
+          mv README.pdf index.html  # Rename for GitHub Pages
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
