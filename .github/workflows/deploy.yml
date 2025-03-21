@@ -1,0 +1,43 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Setup Ruby for Jekyll
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'  # Ensure compatibility with GitHub Pages
+
+      - name: Install Jekyll and Bundler
+        run: |
+          gem install jekyll bundler
+          bundle install || true  # Ignore if Gemfile is missing
+
+      - name: Build Site
+        run: jekyll build -d _site
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
