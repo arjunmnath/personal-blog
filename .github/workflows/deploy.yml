@@ -1,6 +1,5 @@
 name: Convert Markdown to PDF
 
-
 on:
   push:
     paths:
@@ -18,7 +17,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y chromium-browser libatk-bridge2.0-0 libnspr4 libnss3 libxss1 libasound2
+          sudo apt install -y chromium-browser libatk-bridge2.0-0 libnspr4 libnss3 libxss1 libasound2t64 || true
 
       - name: Install md-to-pdf
         run: npm install -g md-to-pdf
