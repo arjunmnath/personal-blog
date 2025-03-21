@@ -1,9 +1,9 @@
-name: Deploy Jekyll to GitHub Pages
+name: Deploy Markdown to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # Change if using a different branch
+      - main  # Change this if your default branch is different
 
 permissions:
   contents: read
@@ -13,45 +13,24 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          ruby-version: '3.1'
+          python-version: '3.9'
 
-      - name: Install Jekyll and Bundler
-        run: gem install jekyll bundler
-
-      - name: Install dependencies
+      - name: Install MkDocs and Material theme
         run: |
-          bundle install || bundle update
+          pip install mkdocs-material
 
-      - name: Build the site
-        run: JEKYLL_ENV=production bundle exec jekyll build
-
-      - name: Check if _site exists
-        run: |
-          if [ -d "_site" ]; then
-            echo "_site directory exists, proceeding to upload.";
-          else
-            echo "_site directory does not exist. Build failed!";
-            exit 1;
-          fi
-
-      - name: List files in the build directory
-        run: ls -alh _site
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: github-pages
-          path: _site
+      - name: Build site
+        run: mkdocs build
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v2
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          artifact_name: github-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
