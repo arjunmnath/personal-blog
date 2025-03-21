@@ -21,22 +21,25 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1'  # Use the latest Ruby version supported by GitHub Pages
+          ruby-version: '3.1'
 
       - name: Install Jekyll and Bundler
         run: gem install jekyll bundler
 
       - name: Install dependencies
-        run: bundle install || bundle update  # Ensures dependencies are installed
+        run: |
+          bundle install || bundle update
+        working-directory: ./  # Specify the correct directory if your Gemfile is inside a subdirectory
 
       - name: Build the site
         run: JEKYLL_ENV=production bundle exec jekyll build
+        working-directory: ./  # Ensure the build command is executed in the correct directory
 
       - name: Upload artifact (FIXED)
-        uses: actions/upload-artifact@v4  # Updated from v3 to v4
+        uses: actions/upload-artifact@v4
         with:
           name: github-pages
-          path: _site  # Jekyll output directory
+          path: _site
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
