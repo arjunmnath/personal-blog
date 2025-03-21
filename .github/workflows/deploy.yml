@@ -24,9 +24,16 @@ jobs:
           sudo apt-get install -y nodejs
           npm install -g md-to-pdf
 
+      - name: Ensure Config Exists
+        run: |
+          if [ ! -f .md-to-pdf.json ]; then
+            echo 'Creating default .md-to-pdf.json'
+            echo '{ "stylesheet": "https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css", "pdf_options": { "format": "A4", "margin": "20mm", "displayHeaderFooter": false } }' > .md-to-pdf.json
+          fi
+
       - name: Convert README.md to Styled HTML
         run: |
-          md-to-pdf README.md --config-file .md-to-pdf.json
+          PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser) md-to-pdf README.md --no-sandbox --config-file .md-to-pdf.json
           mv README.pdf index.html  # Rename for GitHub Pages
 
       - name: Upload Artifact
