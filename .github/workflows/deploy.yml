@@ -3,7 +3,7 @@ name: Deploy Markdown to GitHub Pages
 on:
   push:
     branches:
-      - main  # Change this if your default branch is different
+      - main
 
 permissions:
   contents: read
@@ -23,8 +23,7 @@ jobs:
           python-version: '3.9'
 
       - name: Install MkDocs and Material theme
-        run: |
-          pip install mkdocs-material
+        run: pip install mkdocs-material
 
       - name: Build site
         run: mkdocs build
@@ -32,5 +31,5 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          personal_token: ${{ secrets.GH_PAT }}
           publish_dir: ./site
