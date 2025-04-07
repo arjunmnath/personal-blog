@@ -5,9 +5,7 @@ import Main from 'app/Main'
 export default async function Page() {
   const sortedPosts = sortPosts(allBlogs)
   const posts = allCoreContent(sortedPosts)
-  return (
-      <Main posts={posts} />
-  )
+  return <Main posts={posts} />
   // return (
   //   <div className="text-center">
   //     <h1 className="mb-4 text-5xl font-bold">My Blog</h1>
