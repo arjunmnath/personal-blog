@@ -5,18 +5,19 @@ import Main from 'app/Main'
 export default async function Page() {
   const sortedPosts = sortPosts(allBlogs)
   const posts = allCoreContent(sortedPosts)
-  return <>
-    <Main posts={posts} />
-    <iframe
-      src="https://unity.arjunmnath.me"
-      width="600"
-      height="400"
-      frameBorder="0"
-      allowFullScreen
-      title="Unity Embed"
-
-    ></iframe>
-  </> 
+  return (
+    <>
+      <Main posts={posts} />
+      <iframe
+        src="https://unity.arjunmnath.me"
+        width="600"
+        height="400"
+        frameBorder="0"
+        allowFullScreen
+        title="Unity Embed"
+      ></iframe>
+    </>
+  )
   // return (
   //   <div className="text-center">
   //     <h1 className="mb-4 text-5xl font-bold">My Blog</h1>
