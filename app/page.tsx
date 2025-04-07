@@ -13,6 +13,8 @@ export default async function Page() {
       height="400"
       frameBorder="0"
       allowFullScreen
+      title="Unity Embed"
+
     ></iframe>
   </> 
   // return (
