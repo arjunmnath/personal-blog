@@ -1,4 +1,4 @@
-# Inspired from https://github.com/actions/starter-workflows/blob/main/pages/nextjs.yml
+# GitHub Pages + Prettier auto-fix
 name: GitHub Pages
 
 on:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write  # Needed to commit Prettier fixes back
   pages: write
   id-token: write
 
@@ -20,14 +20,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for commit
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: yarn
       - name: Install dependencies
         run: yarn
-      - name: Run Prettier
-        run: yarn prettier --check .
+      - name: Run Prettier and fix
+        run: yarn prettier --write .
+      - name: Commit and push Prettier fixes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add .
+          git diff --cached --quiet || git commit -m "style: auto-fix formatting via Prettier"
+          git push
       - id: configurepages
         uses: actions/configure-pages@v5
       - name: Restore cache
