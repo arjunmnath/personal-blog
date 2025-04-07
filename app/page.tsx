@@ -7,7 +7,13 @@ export default async function Page() {
   const posts = allCoreContent(sortedPosts)
   return <>
     <Main posts={posts} />
-    <iframe src="https://unity.arjunmnath.me" width="600" height="400" frameborder="0" allowfullscreen></iframe>
+    <iframe
+      src="https://unity.arjunmnath.me"
+      width="600"
+      height="400"
+      frameBorder="0"
+      allowFullScreen
+    ></iframe>
   </> 
   // return (
   //   <div className="text-center">
